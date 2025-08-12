@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Electricity Cost Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em;}
+    label { display:block; margin: 0.5em 0 0.2em;}
+  </style>
+</head>
+<body>
+  <h1>Electricity Cost Calculator</h1>
+  <label>Power (Watts): <input type="number" id="watts" min="0" step="any"></label>
+  <label>Hours per day: <input type="number" id="hours" min="0" step="any"></label>
+  <label>Rate ($/kWh): <input type="number" id="rate" min="0" step="any"></label>
+  <button onclick="calc()">Calculate</button>
+
+  <h2>Result</h2>
+  <p id="out"></p>
+
+  <script>
+    function calc(){
+      const w  = parseFloat(document.getElementById('watts').value)  || 0;
+      const h  = parseFloat(document.getElementById('hours').value)  || 0;
+      const r  = parseFloat(document.getElementById('rate').value)   || 0;
+      const kWh = (w * h) / 1000;
+      const cost = kWh * r;
+      const out = `Energy=${kWh.toFixed(4)} kWh per day, Cost=$${cost.toFixed(2)} per day.`;
+      document.getElementById('out').innerText = out;
+    }
+  </script>
+</body>
+</html>
