@@ -1,33 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Electricity Cost Calculator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YourName — Portfolio</title>
+  <meta name="description" content="A sleek, single-file landing page for a personal portfolio." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 2em;}
-    label { display:block; margin: 0.5em 0 0.2em;}
+    :root{
+      --bg: #0a0b15;
+      --card: rgba(255,255,255,.08);
+      --border: rgba(255,255,255,.15);
+      --text: #e8eaf6;
+      --muted: #b6b9d3;
+      --accent: #7c5cff;
+      --accent-2: #00d4ff;
+    }
+
+    /* Global resets */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto;
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(10,12,21,.9), rgba(10,12,21,.6) 60%), radial-gradient(circle at 20% -10%, rgba(124,92,255,.25), transparent 40%), radial-gradient(circle at 90% 0%, rgba(0,212,255,.25), transparent 40%), var(--bg);
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: rgba(10,12,21,.75);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .logo .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px rgba(124,92,255,.8);
+    }
+    nav ul {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; gap: 18px; align-items: center;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      opacity: .95;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: #fff;
+      background: #1a1a2a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), #5a6cff);
+      border: none;
+      box-shadow: 0 6px 18px rgba(124,92,255,.55);
+    }
+    .btn.ghost {
+      background: rgba(255,255,255,.04);
+    }
+
+    /* HERO */
+    #home {
+      padding: 72px 20px 40px;
+    }
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .hero-text h1 {
+      font-size: 2.6rem;
+      line-height: 1.08;
+      margin: 0 0 12px;
+      letter-spacing: .2px;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #fff, #a3e3ff 40%, #c4b5fd);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 60ch;
+    }
+    .cta-row { margin-top: 20px; display:flex; gap:14px; flex-wrap: wrap; }
+
+    .hero-art {
+      position: relative;
+      height: 360px;
+      min-width: 280px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: radial-gradient(circle at 30% 20%, rgba(124,92,255,.45), transparent 40%), 
+                  radial-gradient(circle at 70% 60%, rgba(0,212,255,.4), transparent 40%), 
+                  linear-gradient(135deg, #1b1b2a, #0e1020);
+      border: 1px solid var(--border);
+      display: grid; place-items: center;
+    }
+    .blob {
+      width: 220px; height: 220px; border-radius: 50%;
+      background: conic-gradient(from 180deg at 50% 50%, #7c5cff, #00d4ff, #7c5cff);
+      filter: blur(0px);
+      animation: spin 12s linear infinite;
+      opacity: .9;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* SECTIONS */
+    .section { padding: 72px 20px; }
+    .section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid; gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    /* PROJECT CARD */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+    .thumb {
+      height: 140px;
+      background: linear-gradient(135deg, #6c5ce7, #00d4ff);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700;
+    }
+    .thumb svg { width: 48px; height: 48px; opacity: .95; }
+    .card-content { padding: 14px 14px 16px; }
+    .card-title { font-weight: 700; margin: 0 0 6px; font-size: 1.05rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: rgba(124,92,255,.15); border: 1px solid rgba(124,92,255,.3); }
+
+    /* ABOUT & SKILLS */
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .about p { color: var(--muted); line-height: 1.65; }
+    .skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .skill { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(255,255,255,.04); border:1px solid var(--border); font-weight:600; }
+
+    /* CONTACT */
+    form { display: grid; gap: 14px; max-width: 640px; }
+    label { font-size: 0.9rem; color: var(--muted); }
+    input, textarea {
+      width: 100%; padding: 12px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.05);
+      color: #fff; font-size: 1rem;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; text-align: left; }
+      .hero-art { height: 320px; }
+      .about { grid-template-columns: 1fr; }
+    }
+
+    /* FOOTER */
+    footer { padding: 28px 20px; text-align: center; color: var(--muted); border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
-  <h1>Electricity Cost Calculator</h1>
-  <label>Power (Watts): <input type="number" id="watts" min="0" step="any"></label>
-  <label>Hours per day: <input type="number" id="hours" min="0" step="any"></label>
-  <label>Rate ($/kWh): <input type="number" id="rate" min="0" step="any"></label>
-  <button onclick="calc()">Calculate</button>
 
-  <h2>Result</h2>
-  <p id="out"></p>
+  <header aria-label="Site header">
+    <div class="nav">
+      <div class="logo" aria-label="Brand">
+        <span class="dot" aria-hidden="true"></span>
+        <span>YourName</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact" class="btn ghost" style="padding:8px 14px;">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" aria-label="Intro section" class="hero-section">
+    <div class="hero" style="gap:48px;">
+      <div class="hero-text">
+        <span class="eyebrow" style="display:block; color:#a6b3d1; font-weight:600; letter-spacing:.12em; text-transform:uppercase; font-size:.9rem; margin-bottom:6px;">Portfolio</span>
+        <h1 class="gradient-text" style="font-size:3rem; line-height:1.08; margin:0;">
+          Hello, I’m <span class="gradient-text" style="background: linear-gradient(90deg, #fff, #a3e3ff); -webkit-background-clip: text; color: transparent;">YourName</span>, a front-end developer
+          crafting fast, accessible, and delightful web experiences
+        </h1>
+        <p class="hero-sub" style="margin-top:12px;">
+          I build responsive interfaces with smooth interactions, accessible semantics, and clean code. Let's turn your ideas into a polished product.
+        </p>
+        <div class="cta-row" aria-label="Primary actions">
+          <a href="#projects" class="btn primary">View Projects</a>
+          <a href="#contact" class="btn" style="background: rgba(255,255,255,.08);">Hire Me</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-label="Decorative illustration">
+        <div class="blob" title="Decorative blob"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section" aria-label="Projects">
+    <h2>Selected Work</h2>
+    <p style="color:var(--muted); margin-top:-6px; margin-bottom:14px;">
+      A snapshot of recent projects. Hover cards to see details.
+    </p>
+
+    <div class="grid" role="list">
+      <!-- Card 1 -->
+      <article class="card" role="listitem" aria-label="Project Nebula">
+        <div class="thumb" aria-label="Nebula project cover">
+          <!-- inline SVG icon -->
+          <svg viewBox="0 0 64 64" width="48" height="48" fill="white" aria-label="Code icon">
+            <path d="M6 20l12-8 12 8-12 8-12-8zm12 8l12-8 12 8-12 8-12-8zM6 44l12-8 12 8-12 8-12-8zm12 8l12-8 12 8-12 8-12-8z" opacity=".9"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title" style="margin:0 0 6px;">Nebula UI Kit</h3>
+          <div class="tags" aria-label="Technologies used">
+            <span class="tag">React</span><span class="tag">Tailwind</span><span class="tag">Accessibility</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="card" role="listitem" aria-label="Project Pixel Forge">
+        <div class="thumb" aria-label="Pixel Forge cover" style="background: linear-gradient(135deg, #ff7eb3, #7b5cff);">
+          <svg viewBox="0 0 64 64" width="48" height="48" fill="white" aria-label="Spark icon">
+            <path d="M32 6l4 12h12l-9.6 7.2L42 40l-6-7-6 7 3.6-14.8L25 18h12z"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title" style="margin:0 0 6px;">Pixel Forge Dashboard</h3>
+          <div class="tags">
+            <span class="tag">Vue</span><span class="tag">Vite</span><span class="tag">Animations</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="card" role="listitem" aria-label="Project Atlas Commerce">
+        <div class="thumb" aria-label="Atlas Commerce cover" style="background: linear-gradient(135deg, #2dd4bf, #1e3a8a);">
+          <svg viewBox="0 0 64 64" width="48" height="48" fill="white" aria-label="Cart icon">
+            <path d="M6 6h8l6 28h28l6-14H22" opacity=".9"/>
+            <circle cx="23" cy="46" r="5" fill="#fff"/>
+            <circle cx="46" cy="46" r="5" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title" style="margin:0 0 6px;">Atlas Commerce</h3>
+          <div class="tags">
+            <span class="tag">Shop</span><span class="tag">Next.js</span><span class="tag">Performance</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="card" role="listitem" aria-label="Project Flux Studio">
+        <div class="thumb" aria-label="Flux Studio cover" style="background: linear-gradient(135deg, #8b5cf6, #22d3ee);">
+          <svg viewBox="0 0 64 64" width="48" height="48" fill="white" aria-label="Brush icon">
+            <path d="M6 56l40-40 8 8-40 40-8-8z"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title" style="margin:0 0 6px;">Flux Studio</h3>
+          <div class="tags">
+            <span class="tag">Design System</span><span class="tag">CSS Vars</span><span class="tag">Accessibility</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section" aria-label="About me and skills">
+    <h2>About Me</h2>
+    <div class="about">
+      <div class="bio" aria-label="Bio">
+        <p>
+          I'm a dedicated frontend engineer with a passion for crafting intuitive, fast, and accessible web experiences.
+          I love collaborating with product teams to turn ideas into delightful interfaces with clean, maintainable code.
+        </p>
+        <p>
+          Metrics I care about: performance budgets, CLS under 0.1, LCP under 2.5s on a 3G network, and a11y audit success.
+        </p>
+      </div>
+
+      <div class="skills" aria-label="Key skills">
+        <div class="skill">HTML5</div>
+        <div class="skill">CSS / CSS Variables</div>
+        <div class="skill">JavaScript (ES6+)</div>
+        <div class="skill">React</div>
+        <div class="skill">UI/UX</div>
+        <div class="skill">Accessibility (a11y)</div>
+        <div class="skill">Performance Optimization</div>
+        <div class="skill">Testing</div>
+        <div class="skill">Git & CI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section" aria-label="Contact">
+    <h2>Contact</h2>
+    <p style="color:var(--muted); margin-top:-6px; margin-bottom:12px;">
+      Want to work together? Reach out and I’ll respond within 1–2 business days.
+    </p>
+
+    <form id="contact-form" action="#" method="post" onsubmit="return handleSubmit(event);">
+      <div class="form-row">
+        <div>
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+      </div>
+
+      <div>
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Tell me about your project, goals, and timeline..." required></textarea>
+      </div>
+
+      <button class="btn primary" type="submit" aria-label="Send message">Send Message</button>
+      <p id="form-status" style="color:#9af0c9; display:none; margin:8px 0 0;">Thanks! Your message has been sent.</p>
+    </form>
+  </section>
+
+  <footer aria-label="Site footer">
+    © <span id="year"></span> YourName • Crafted with care
+  </footer>
 
   <script>
-    function calc(){
-      const w  = parseFloat(document.getElementById('watts').value)  || 0;
-      const h  = parseFloat(document.getElementById('hours').value)  || 0;
-      const r  = parseFloat(document.getElementById('rate').value)   || 0;
-      const kWh = (w * h) / 1000;
-      const cost = kWh * r;
-      const out = `Energy=${kWh.toFixed(4)} kWh per day, Cost=$${cost.toFixed(2)} per day.`;
-      document.getElementById('out').innerText = out;
+    // Small UX niceties
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const status = document.getElementById('form-status');
+      status.style.display = 'block';
+      status.textContent = 'Sending...';
+      // Simple in-page demo: mimic async form submission
+      setTimeout(() => {
+        status.textContent = 'Thanks! Your message has been sent. I will get back to you soon.';
+        document.getElementById('contact-form').reset();
+      }, 800);
+      return false;
     }
   </script>
+
 </body>
 </html>
