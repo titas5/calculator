@@ -19,6 +19,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy files using rsync
-        run: |
-          rsync -avz --delete ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/html/calculator
+        script: |
+          PROJECT_DIR="/var/www/html/calculator"
+          cd $PROJECT_DIR
+          git pull https://github.com/titas5/calculator.git main
+          systemctl reload nginx
