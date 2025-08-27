@@ -2,15 +2,14 @@ name: Deploy to VPS
 
 on:
   push:
-    branches:
-      - main   # Change if your branch is different
+    branches: [ "main" ]  # or your branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup SSH
@@ -20,6 +19,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy via rsync
+      - name: Deploy files using rsync
         run: |
           rsync -avz --delete ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/html/calculator
