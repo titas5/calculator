@@ -1,8 +1,6 @@
-name: Deploy to VPS
-
 on:
   push:
-    branches: [ "main" ]  # or your branch
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -12,15 +10,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH
+      - name: Setup SSH and Deploy
         run: |
+          # Configure SSH
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-        script: |
-          PROJECT_DIR="/var/www/html/calculator"
-          cd $PROJECT_DIR
-          git pull https://github.com/titas5/calculator.git main
-          systemctl reload nginx
+          # Run commands on the remote server
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            PROJECT_DIR="/var/www/html/calculator"
+            cd $PROJECT_DIR || exit 1
+            git pull https://github.com/titas5/calculator.git main
+            sudo systemctl reload nginx
+          EOF
